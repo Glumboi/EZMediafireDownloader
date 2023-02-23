@@ -1,0 +1,102 @@
+﻿<ui:UiWindow
+        x:Class="EZMediafireDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EZMediafireDownloader"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="EZMediafireDownloader"
+        Height="225"
+        Width="800"
+        MinHeight="260"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Mica"
+        WindowCornerPreference="Round"
+        WindowStartupLocation="CenterScreen"
+        Background="Gray"
+        Loaded="UiWindow_Loaded"
+        ResizeMode="NoResize">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar
+            x:Name="TitleBar"
+            Title="EZMediafireDownloader"
+            ShowMaximize="False" />
+
+        <Border Padding="10" Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel  Grid.Column="0">
+
+                    <TextBlock Text="Mediafire Link"
+                               FontWeight="Bold"
+                               Margin="0 0 4 6" />
+
+                    <TextBox x:Name="MediafireLink_TextBox"
+                             Margin="0 0 4 0" />
+
+                    <ProgressBar Margin="0 6 4 0"
+                                 x:Name="Download_ProgressBar"
+                                 Visibility="Collapsed" />
+
+                    <TextBlock FontWeight="Bold"
+                               Margin="0 1 4 0"
+                               HorizontalAlignment="Right"
+                               Visibility="Collapsed"
+                               x:Name="DownloadInfo_TextBlock" />
+
+                    <TextBlock Text="Options"
+                               FontWeight="Bold"
+                               Margin="0 8 0 0" />
+
+                    <CheckBox Content="Save last save path"
+                              Margin=" 0 2 0 0"
+                              x:Name="Savepath_CheckBox"
+                              Checked="Savepath_CheckBox_Checked"
+                              Unchecked="Savepath_CheckBox_Checked" />
+
+                    <CheckBox Content="Close when done"
+                              Margin=" 0 2 0 0"
+                              x:Name="CloseDone_CheckBox"
+                              Checked="CloseDone_CheckBox_Checked"
+                              Unchecked="CloseDone_CheckBox_Checked" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1">
+
+                    <TextBlock Text="Actions"
+                               FontWeight="Bold"
+                               Margin="4 0 0 6" />
+
+                    <ui:Button HorizontalAlignment="Stretch"
+                            Content="Download"
+                            Margin="4 0 0 0"
+                            ToolTip="Downloads the file from mediafire and asks where to save it. If 'Save last save path' is activated, it will automatically save to the last used save path"
+                            x:Name="Download_Button"
+                            Click="Download_Button_Click" />
+
+                    <ui:Button HorizontalAlignment="Stretch"
+                            Content="Quick Download"
+                            Margin="4 4 0 0"
+                            ToolTip="Automatically saves the file in the downloads folder without asking"
+                            x:Name="FastDownload_Button"
+                            Click="FastDownload_Button_Click" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</ui:UiWindow>
