@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MediaFireDownloaderNew;
 using Wpf.Ui.Controls;
 
 namespace EZMediafireDownloader
@@ -127,55 +128,60 @@ namespace EZMediafireDownloader
 
         private void StartDownload(bool quick = false)
         {
-            string fileName = string.Empty;
+            using (MediaFireDownloaderNew.MediaFireDownloader downloader = new MediaFireDownloader(client))
+            {
+                string fileName = string.Empty;
 
-            try
-            {
-                fileName = Mediafire.MediafireDownloader.GetMediafireDDL(MediafireLink_TextBox.Text).Split('/').Last();
-            }
-            catch (Exception)
-            {
-                if (string.IsNullOrWhiteSpace(MediafireLink_TextBox.Text))
+                try
                 {
-                    System.Windows.MessageBox.Show("Link field is empty, enter a valid Link!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                    fileName = downloader.ConvertMediaFireToDirectDownload(MediafireLink_TextBox.Text).Split('/').Last();
+                }
+                catch (Exception)
+                {
+                    if (string.IsNullOrWhiteSpace(MediafireLink_TextBox.Text))
+                    {
+                        System.Windows.MessageBox.Show("Link field is empty, enter a valid Link!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+                    System.Windows.MessageBox.Show("The entered Mediafire link is not working...", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                System.Windows.MessageBox.Show("The entered Mediafire link is not working...", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                
+                
+                client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                client.DownloadFileCompleted += Client_DownloadFileCompleted;
+                ChangeDownloadInfoVisibility(false);
+                
+                string dest;
 
-            client.DownloadProgressChanged += Client_DownloadProgressChanged;
-            client.DownloadFileCompleted += Client_DownloadFileCompleted;
-
-            ChangeDownloadInfoVisibility(false);
-
-            string dest;
-
-            if (!quick)
-            {
-                if (Properties.Settings.Default.SaveLastSavePath && Properties.Settings.Default.LastSavePath != string.Empty)
+                if (!quick)
                 {
-                    dest = Properties.Settings.Default.LastSavePath + "\\" + fileName;
+                    if (Properties.Settings.Default.SaveLastSavePath && Properties.Settings.Default.LastSavePath != string.Empty)
+                    {
+                        dest = Properties.Settings.Default.LastSavePath + "\\" + fileName;
+                    }
+                    else
+                    {
+                        dest = SelectDest(fileName);
+                    }
+
+                    if (dest != string.Empty)
+                    {
+                        downloader.DownloadAsync(MediafireLink_TextBox.Text, dest, client);
+                        sw.Start();
+                    }
                 }
                 else
                 {
-                    dest = SelectDest(fileName);
-                }
-
-                if (dest != string.Empty)
-                {
-                    Mediafire.MediafireDownloader.DownloadMediafireFileAsync(MediafireLink_TextBox.Text, dest, client);
+                    dest = GetDownloadFolderPath() + "\\" + fileName;
+                    downloader.DownloadAsync(MediafireLink_TextBox.Text, dest, client);
                     sw.Start();
                 }
-            }
-            else
-            {
-                dest = GetDownloadFolderPath() + "\\" + fileName;
-                Mediafire.MediafireDownloader.DownloadMediafireFileAsync(MediafireLink_TextBox.Text, dest, client);
-                sw.Start();
-            }
 
-            lastPath = dest.Replace("\\" + fileName, string.Empty);
+                lastPath = dest.Replace("\\" + fileName, string.Empty);
+            }
+            
+
         }
 
         private void Client_DownloadFileCompleted(object? sender, System.ComponentModel.AsyncCompletedEventArgs e)

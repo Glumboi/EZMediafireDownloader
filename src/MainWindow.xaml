@@ -8,14 +8,14 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
         Title="EZMediafireDownloader"
-        Height="225"
+        Height="260"
         Width="800"
         MinHeight="260"
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"
         WindowCornerPreference="Round"
         WindowStartupLocation="CenterScreen"
-        Background="Gray"
+        Background="#3333"
         Loaded="UiWindow_Loaded"
         ResizeMode="NoResize">
 
@@ -87,14 +87,16 @@
                             Margin="4 0 0 0"
                             ToolTip="Downloads the file from mediafire and asks where to save it. If 'Save last save path' is activated, it will automatically save to the last used save path"
                             x:Name="Download_Button"
-                            Click="Download_Button_Click" />
+                            Click="Download_Button_Click" 
+                            Icon="ArrowDownload24"/>
 
                     <ui:Button HorizontalAlignment="Stretch"
                             Content="Quick Download"
                             Margin="4 4 0 0"
                             ToolTip="Automatically saves the file in the downloads folder without asking"
                             x:Name="FastDownload_Button"
-                            Click="FastDownload_Button_Click" />
+                            Click="FastDownload_Button_Click" 
+                            Icon="FastForward24"/>
                 </StackPanel>
             </Grid>
         </Border>
